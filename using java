@@ -1,0 +1,148 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// Class to represent a Task
+class Task {
+    private String title;
+    private String description;
+    private boolean isCompleted;
+
+    public Task(String title, String description) {
+        this.title = title;
+        this.description = description;
+        this.isCompleted = false;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void markAsCompleted() {
+        isCompleted = true;
+    }
+
+    public void deleteTask() {
+        // In a more complex system, this could be handled with database or lists
+        // Here, marking it as null or similar can help
+    }
+
+    @Override
+    public String toString() {
+        return "Title: " + title + ", Description: " + description + ", Status: " + (isCompleted ? "Completed" : "Pending");
+    }
+}
+
+// Class to manage tasks
+class TaskManagementSystem {
+    private ArrayList<Task> tasks = new ArrayList<>();
+
+    public void addTask(String title, String description) {
+        tasks.add(new Task(title, description));
+        System.out.println("Task added successfully!");
+    }
+
+    public void viewAllTasks() {
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks available.");
+        } else {
+            System.out.println("List of Tasks:");
+            for (Task task : tasks) {
+                System.out.println(task);
+            }
+        }
+    }
+
+    public Task searchTaskByTitle(String title) {
+        for (Task task : tasks) {
+            if (task.getTitle().equalsIgnoreCase(title)) {
+                return task;
+            }
+        }
+        return null;
+    }
+
+    public void markTaskAsCompleted(String title) {
+        Task task = searchTaskByTitle(title);
+        if (task != null && !task.isCompleted()) {
+            task.markAsCompleted();
+            System.out.println("Task \"" + title + "\" marked as completed.");
+        } else if (task == null) {
+            System.out.println("Task not found.");
+        } else {
+            System.out.println("Task \"" + title + "\" is already completed.");
+        }
+    }
+
+    public void deleteTask(String title) {
+        Task task = searchTaskByTitle(title);
+        if (task != null) {
+            tasks.remove(task);
+            System.out.println("Task \"" + title + "\" deleted.");
+        } else {
+            System.out.println("Task not found.");
+        }
+    }
+}
+
+// Main class to run the application
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        TaskManagementSystem taskManager = new TaskManagementSystem();
+
+        while (true) {
+            System.out.println("\n=== Task Management System ===");
+            System.out.println("1. Add Task");
+            System.out.println("2. View All Tasks");
+            System.out.println("3. Mark Task as Completed");
+            System.out.println("4. Delete Task");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter task title: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Enter task description: ");
+                    String description = scanner.nextLine();
+                    taskManager.addTask(title, description);
+                    break;
+
+                case 2:
+                    taskManager.viewAllTasks();
+                    break;
+
+                case 3:
+                    System.out.print("Enter task title to mark as completed: ");
+                    String completeTitle = scanner.nextLine();
+                    taskManager.markTaskAsCompleted(completeTitle);
+                    break;
+
+                case 4:
+                    System.out.print("Enter task title to delete: ");
+                    String deleteTitle = scanner.nextLine();
+                    taskManager.deleteTask(deleteTitle);
+                    break;
+
+                case 5:
+                    System.out.println("Exiting the Task Management System. Goodbye!");
+                    scanner.close();
+                    System.exit(0);
+
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+}
